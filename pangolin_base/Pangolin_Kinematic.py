@@ -26,8 +26,8 @@ class PangolinKinematic:
         self.is_walking = is_walking
 
         self.leg_angle   = np.zeros(4)
-        self.head_angle   = np.zeros(4)
-        self.spine_angle   = np.zeros(4)
+        self.head_angle   = np.zeros(2)
+        self.spine_angle   = np.zeros(2)
 
         self.leg_angle = self.leg_controller()
         self.head_angle = self.head_controller()
@@ -42,7 +42,6 @@ class PangolinKinematic:
         elif self.req_vel.linear.x < -0.1: self.req_vel.linear.x = -1.0
         
         # print("gait_name",self.gait_name)
-        
         if self.gait_name == 'move_linear':
             leg_angle = np.array(self.leg_position) * self.req_vel.linear.x
             
@@ -58,7 +57,9 @@ class PangolinKinematic:
         
             leg_angle = np.array(self.leg_position) * self.req_vel.angular.z
             # print("leg_angle",leg_angle)
-
+        elif self.gait_name == 'IDLE':
+            leg_angle = np.array(self.leg_position)
+            
         return leg_angle
 
 
@@ -66,7 +67,7 @@ class PangolinKinematic:
         """ Calculates head angles (currently not implemented). """
 
         head_angle = np.zeros(2)
-
+        
         return head_angle
 
 
@@ -88,7 +89,8 @@ class PangolinKinematic:
                     self.spine_speedMax = 0
                     self.spine_value = -16.0
                 
-                spine_angle = np.array([self.spine_value, 0])
+                spine_angle = np.array([self.spine_value, 0]) # for cute
+                # spine_angle = np.zeros(2)
                 # print("spine angle (smooth):", spine_angle)
             else:
                 if round(self.req_vel.linear.x, 1) > 0:  # fix the problem that when using keyboard control, key 'M', and key '>' have opposite direction
@@ -97,13 +99,13 @@ class PangolinKinematic:
                     self.req_vel.angular.z = - self.req_vel.angular.z
 
                 # Apply multiplier to angular.z for spine angle
-                # Increment or decrement based on angular.z direction, up to max of 30 or -30
+                # Increment or decrement based on angular.z direction, up to max of 28 or -28
                 
                 if round(self.req_vel.angular.z, 1) < 0:
-                    self.spine_value = 20 #30
+                    self.spine_value = 28 #30
                     # self.spine_value = min(self.spine_value + 1, 20) #30
                 else:
-                    self.spine_value = -20 #30
+                    self.spine_value = -28 #30
                     # self.spine_value = max(self.spine_value - 1, -20) #30
                 
                 spine_angle = np.array([self.spine_value, 0])
