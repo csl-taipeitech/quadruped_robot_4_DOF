@@ -47,6 +47,11 @@ $ ./start.sh
 $ ros2 launch pangolin_bringup pangolin_bringup.launch.py
 ```
 
+### AprilTag Follower
+
+```
+$ python3 pangolin_base/apriltag_following_final.py
+```
 ### VSLAM Test
 
 
